@@ -1,23 +1,19 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <my-tab-bar></my-tab-bar>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'App'
+  import MyTabBar from './components/content/mytabbar/MyTabBar'
+  export default {
+  name: 'App',
+  components: {
+    MyTabBar
+  }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  @import "./assets/css/base.css";
 </style>
