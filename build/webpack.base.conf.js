@@ -28,6 +28,8 @@ module.exports = {
       '@': resolve('src'),
       'pages': resolve('src/pages'),
       'assets': resolve('src/assets'),
+      'components': resolve('src/components'),
+      'network': resolve('src/network'),
     }
   },
   module: {
@@ -65,7 +67,8 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      }
+      },
+
     ]
   },
   node: {

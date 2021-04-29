@@ -6,14 +6,14 @@
         <img slot="item-icon-active" src="~assets/img/tabbar/home_active.svg">
         <div slot="item-text">首页</div>
       </tab-bar-itme>
-      <tab-bar-itme link="/class">
+      <tab-bar-itme link="/categroy">
         <img slot="item-icon" src="~assets/img/tabbar/category.svg">
         <img slot="item-icon-active" src="~assets/img/tabbar/category_active.svg">
         <div slot="item-text">分类</div>
       </tab-bar-itme>
       <tab-bar-itme link="car">
         <img slot="item-icon" src="~assets/img/tabbar/shopcart.svg">
-        <img slot="item-icon-active" src="~assets/assets/img/tabbar/shopcart_active.svg">
+        <img slot="item-icon-active" src="~assets/img/tabbar/shopcart_active.svg">
         <div slot="item-text">购物车</div>
       </tab-bar-itme>
       <tab-bar-itme link="profile">
@@ -25,8 +25,8 @@
   </div>
 </template>
 <script>
-  import TabBar from './tabbar/TabBar'
-  import TabBarItme from './tabbar/TabBarItem'
+  import TabBar from 'components/common/tabbar/TabBar'
+  import TabBarItme from 'components/common/tabbar/TabBarItem'
   export default {
     name: "MyTabBar",
     components:{
