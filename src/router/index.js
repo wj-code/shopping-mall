@@ -46,6 +46,7 @@ const router = new Router({
   routes,
   mode:'history'
 })
+//导航守卫
 router.beforeEach((to,from,next) => {
   document.title = to.matched[0].meta.title;
   next();

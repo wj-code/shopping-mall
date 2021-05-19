@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.url" @click="handler('previewImg')">
+    <img :src="goodsItem.url" @click="handler('previewImg')" @load="imagesLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price" @click="handler('checkPrice')">{{goodsItem.price}}</span>
@@ -22,6 +22,10 @@
     methods:{
       handler(event){
         this.$emit(event, {id: 1})
+      },
+      imagesLoad(){
+        //console.log("图片加载了");
+        this.$bus.$emit("imageLoad");
       }
   }
   }

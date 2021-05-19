@@ -1,7 +1,7 @@
 <template>
   <div class="swiper-container">
     <swiper ref="mySwiper" :options="swiperOption" @someSwiperEvent="callback">
-      <swiper-slide v-for="item in slideshowList" :key="item.url">
+      <swiper-slide v-for="item in slideshowList" :key="item.url" class="slideshow-box">
         <a :href="item.link"><img :src="item.url"></a>
       </swiper-slide>
     </swiper>
@@ -57,24 +57,23 @@
       swiperSlide
     },
     mounted() {
-      console.log('Current Swiper instance object', this.myswiper)
+      // console.log('Current Swiper instance object', this.myswiper)
       this.myswiper.slideTo(3, 1000, false)
     },
     methods: {
       callback() {
-
       }
     }
   }
 </script>
 
-<style >
+<style scoped>
   .swiper-container {
     position: relative;
     width: 100%;
     height: 300px;
   }
-  slideshow-box img {
+  .slideshow-box img {
     width: 100%;
     height: 100%;
   }

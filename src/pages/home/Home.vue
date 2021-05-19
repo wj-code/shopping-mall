@@ -3,36 +3,28 @@
     <nav-bar class="home_nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :slideshowList="slideshowList"></home-swiper>
-    <recommend-view :recommends="recommends"></recommend-view>
-    <featyre-view></featyre-view>
-    <tab-control :titles='["流行","新款","精选"]' class="tab-control" @updateGoodsType="updateGoodsType"></tab-control>
-    <div class="wrapper" ref="myscroll">
-    <goods-list-item :goods="this.goods[goodsType].list" class="content" ></goods-list-item>
-    </div>
-
-    <ul>
-      <li></li>
-      <li></li>
-      <li></li>
-    </ul>
+    <scroll class="content" ref="scroll" @onScroll="contentScroll" @pullingUp="loadMore">
+      <home-swiper :slideshowList="slideshowList"></home-swiper>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <featyre-view></featyre-view>
+      <tab-control :titles='["流行","新款","精选"]' class="tab-control" @updateGoodsType="updateGoodsType"></tab-control>
+      <goods-list-item :goods="this.goods[goodsType].list"  ></goods-list-item>
+    </scroll>
+    <back-top @click.native="btnBackTop" v-show="isShow"></back-top>
   </div>
 </template>
 <script>
   import {getHomeMultidata,getProductData} from 'network/home';
-
   import NavBar from 'components/common/navbar/NavBar';
-  import TabControl from 'components/content/tabcontrol/TabControl'
-  import GoodsListItem from 'components/content/goods/GoodsList'
+  import TabControl from 'components/content/tabcontrol/TabControl';
+  import GoodsListItem from 'components/content/goods/GoodsList';
+  import Scroll from 'components/common/scrool/Scroll'
+  import BackTop from 'components/content/backtop/BackTop'
 
   import HomeSwiper from './childcomponens/HomeSwiper';
-  import RecommendView from './childcomponens/RecommendView'
-  import FeatyreView from './childcomponens/FeatyreView'
-  //导入第三方框架
-  import BScroll from '@better-scroll/core'
-  import Pullup from '@better-scroll/pull-up'
+  import RecommendView from './childcomponens/RecommendView';
+  import FeatyreView from './childcomponens/FeatyreView';
 
-  BScroll.use(Pullup)
 
   export default {
     name: "Home",
@@ -148,19 +140,22 @@
             ]},
         },
         goodsType:'pop',
-        bs:null
+        isShow:false
       }
     },
     components: {
       NavBar,
       TabControl,
       GoodsListItem,
+      Scroll,
       HomeSwiper,
       RecommendView,
-      FeatyreView
+      FeatyreView,
+      BackTop
     },
     //请求数据 在组件创建好后就请求数据，在created()钩子
     created(){
+
       /*
       获取轮播图的图片数据
       this.getHomeMultidata();
@@ -174,22 +169,34 @@
        */
     },
     methods:{
-      //第三方框架
-      init() {
-        this.bs = new BScroll(this.$refs.myscroll, {
-          probeType: 3,
-          click: true,
-          pullUpLoad: true
-        })
-        this.bs.on('scroll', (p) => {
-          console.log(p)
-        }),
-          this.bs.on('pullingUp', () => {
-            this.goods[this.goodsType].list.push(...this.goods['new'].list);
-            this.bs.finishPullUp();
-            console.log('上拉加载了');
-          })
+      contentScroll(scroll) {
+        if(scroll.y < -1000){
+          this.isShow = true ;
+        }else {
+          this.isShow = false ;
+        }
       },
+      loadMore() {
+        this.goods[this.goodsType].list.push(...this.goods['new'].list);
+        console.log('上拉加载了');
+        this.$refs.scroll.finishPullUp();
+      },
+      // init() {
+      //   this.bs = new BScroll(this.$refs.myscroll, {
+      //     probeType: 3,
+      //     click: true,
+      //     pullUpLoad: true
+      //   })
+      //   this.bs.on('scroll', (p) => {
+      //     console.log(p)
+      //   }),
+      //     this.bs.on('pullingUp', () => {
+      //       this.goods[this.goodsType].list.push(...this.goods['new'].list);
+      //       this.bs.finishPullUp();
+      //       console.log('上拉加载了');
+      //     })
+      // },
+
       /*
        网络请求相关方法
        */
@@ -220,16 +227,42 @@
            break ;
          }
        }
+      },
+      btnBackTop(){
+        this.$refs.scroll.bs.scrollTo(0,0,500);
+      },
+      //防抖动函数
+      debounce(func,delay){
+        let timer = null ;
+        return function (...args) {
+          if(timer) {
+            clearInterval(timer);
+          }
+          timer = setTimeout(()=>{
+            func.apply(this,args);
+          },delay)
+        }
       }
     },
     mounted(){
-      this.init()
+      this.$refs.scroll.init({
+        pullUpLoad: true,
+        click:true,
+        probeType:3
+      })
+      const refresh = this.debounce(this.$refs.scroll.scrollRefresh,100);
+      //获取事件总线的
+      this.$bus.$on('imageLoad',() => {
+        refresh();
+      })
     }
   }
 </script>
 <style scoped>
   #home {
     padding-top: 44px;
+    height: 100vh;
+    position: relative;
   }
   .home_nav {
     background-color: var(--color-tint);
@@ -245,8 +278,16 @@
     top: 44px;
     z-index: 9;
   }
-  .wrapper {
-    height:100%;
+  /*.content {*/
+  /*  height: calc(100% - 93px);*/
+  /*  overflow: hidden;*/
+  /*}*/
+  .content {
+    position: absolute;
+    top:44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
     overflow: hidden;
   }
 </style>
